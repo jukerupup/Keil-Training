@@ -30,12 +30,16 @@ void delay(volatile uint32_t count)
 int main(void)
 {
 	SysClockConfig();
+	//SystemInit();
 	GPIO_Config();
+	TIM2_Config();
 	while(1)
 	{
-		delay(1000000);
+		Delay_ms(1000);
+		//delay(1000000);
 		GPIOC->BSRR = (1 << (13 + 16));
-		delay(1000000);
+		Delay_ms(1000);
+		//delay(1000000);
 		GPIOC->BSRR = (1 << 13);
 	}
 }

@@ -1,12 +1,5 @@
 #include "stm32f10x.h"
 
-void TIM2_Config(void)
-{
-	RCC->AHBENR |= (1<<0);
-	TIM2->ARR=0xffff-1;
-	TIM2->PSC=72-1;
-}
-
 uint32_t GetHCLKFreq(void)
 {
 	uint32_t sysclk = 0;
@@ -76,4 +69,25 @@ uint32_t GetHCLKFreq(void)
 		case 0xF:			return sysclk / 512;
 		default:			return sysclk;
 		}
+}
+
+void TIM2_Config(void)
+{
+	RCC->APB1ENR |= (1<<0);
+	TIM2->ARR=0xffff-1;
+	TIM2->PSC=(GetHCLKFreq()/1000000)-1;
+	TIM2->CR1 |= (1<<0);
+	while(!TIM2->SR & (1<<0));
+}
+
+void Delay_us (uint16_t us)
+{
+	TIM2->CNT=0;
+	while(TIM2->CNT<us);
+}
+
+void Delay_ms (uint16_t ms)
+{
+	for(uint16_t i=0; i<ms; i++)
+		Delay_us(1000);
 }
