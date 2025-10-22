@@ -1,5 +1,6 @@
 #include "stm32f10x.h"
 #include "Delay_F103.h"
+#include "UART.h"
 
 void SysClockConfig(void)
 {
@@ -33,6 +34,7 @@ int main(void)
 	//SystemInit();
 	GPIO_Config();
 	TIM2_Config();
+	Uart1Config();
 	while(1)
 	{
 		Delay_ms(1000);
@@ -41,5 +43,6 @@ int main(void)
 		Delay_ms(1000);
 		//delay(1000000);
 		GPIOC->BSRR = (1 << 13);
+		USART1_SendChar('C');
 	}
 }
