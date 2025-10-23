@@ -8,3 +8,4 @@
 .\objects\main.o: C:\Users\USER\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armcc.h
 .\objects\main.o: C:\Users\USER\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include\system_stm32f10x.h
 .\objects\main.o: MyFUNC\Delay_F103.h
+.\objects\main.o: MyFUNC\UART.h
