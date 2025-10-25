@@ -11,11 +11,11 @@ OBJCOPY = arm-none-eabi-objcopy
 # =====================
 CFLAGS = -mcpu=$(CPU) -mthumb -Wall -O2 -ffunction-sections -fdata-sections
 CFLAGS += -IInc \
-          -IDrivers/STM32F10x_StdPeriph_Driver/inc \
-          -ICMSIS/CM3/DeviceSupport/ST/STM32F10x \
-          -ICMSIS/CM3/CoreSupport \
-          -DCMSIS -DSTM32F10X_MD \
-          -include Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_conf.h
+		-IDrivers/STM32F10x_StdPeriph_Driver/inc \
+		-ICMSIS/CM3/DeviceSupport/ST/STM32F10x \
+		-ICMSIS/CM3/CoreSupport \
+		-DCMSIS -DSTM32F10X_MD \
+		-include Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_conf.h
 
 LDFLAGS = -TSTM32F103C8TX_FLASH.ld -nostartfiles -Wl,--gc-sections
 
@@ -23,8 +23,8 @@ LDFLAGS = -TSTM32F103C8TX_FLASH.ld -nostartfiles -Wl,--gc-sections
 # Source Files
 # =====================
 C_SRC = $(wildcard Src/*.c) \
-        Drivers/STM32F10x_StdPeriph_Driver/src/misc.c \
-        CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c
+		Drivers/STM32F10x_StdPeriph_Driver/src/misc.c \
+		CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c
 
 S_SRC = Src/startup_stm32f10x_md.s
 
