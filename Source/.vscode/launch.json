@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug (ST-Link)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "executable": "${workspaceFolder}/build/main.elf",
+            "cwd": "${workspaceFolder}",
+            "device": "STM32F103C8",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f1x.cfg"
+            ],
+            "runToMain": true,
+            "svdFile": "${workspaceFolder}/STM32F103.svd",
+            "showDevDebugOutput": "none",
+            "preLaunchTask": "Build STM32 Project"
+        }
+    ]
+}
