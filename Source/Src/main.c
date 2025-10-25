@@ -5,7 +5,7 @@
 void SysClockConfig(void)
 {
 	RCC->CR |= RCC_CR_HSERDY;
-	while(!(RCC->CR & RCC_CR_HSERDY));
+	while (!(RCC->CR & RCC_CR_HSERDY));
 	RCC->APB1ENR |= RCC_APB1ENR_PWREN;
 	FLASH->ACR |= FLASH_ACR_PRFTBE | FLASH_ACR_LATENCY_0;
 	RCC->CFGR |= RCC_CFGR_HPRE_DIV1;
@@ -18,30 +18,21 @@ void GPIO_Config(void)
 {
 	RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
 	GPIOC->CRH &= ~(0xF << 20);
-	GPIOC->CRH |= 1<<20;
-}
-
-void delay(volatile uint32_t count)
-{
-    while (count--) {
-        __NOP();
-    }
+	GPIOC->CRH |= 1 << 20;
 }
 
 int main(void)
 {
 	SysClockConfig();
-	//SystemInit();
+	// SystemInit();
 	GPIO_Config();
 	TIM2_Config();
 	Uart1Config();
-	while(1)
+	while (1)
 	{
 		Delay_ms(1000);
-		//delay(1000000);
 		GPIOC->BSRR = (1 << (13 + 16));
 		Delay_ms(1000);
-		//delay(1000000);
 		GPIOC->BSRR = (1 << 13);
 		USART1_SendChar('C');
 	}

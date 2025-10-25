@@ -28,8 +28,14 @@ C_SRC = $(wildcard Src/*.c) \
 
 S_SRC = Src/startup_stm32f10x_md.s
 
-C_OBJ = $(C_SRC:.c=.o)
-S_OBJ = $(S_SRC:.s=.o)
+# =====================
+# Object Output Path
+# =====================
+OBJ_DIR = build/obj
+
+# Redirect all object files (.o) into build/obj/
+C_OBJ = $(C_SRC:%.c=$(OBJ_DIR)/%.o)
+S_OBJ = $(S_SRC:%.s=$(OBJ_DIR)/%.o)
 OBJ = $(C_OBJ) $(S_OBJ)
 
 TARGET = build/main.elf
@@ -45,22 +51,26 @@ $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ $(LDFLAGS)
 
 # Compile C
-%.o: %.c
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile Assembly
-%.o: %.s
+$(OBJ_DIR)/%.o: %.s
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean
 clean:
-	rm -f $(OBJ) $(TARGET) build/main.bin build/main.hex
+	rm -rf $(OBJ_DIR) $(TARGET) build/main.bin build/main.hex
 
 # Convert ELF -> HEX
 hex: $(TARGET)
 	$(OBJCOPY) -O ihex $(TARGET) build/main.hex
 
-
+# =====================
+# Flash
+# =====================
 flash: hex
 	@echo "Flashing with ST-LINK CLI on Windows..."
 	@HEX_WIN_PATH=$$(wslpath -w build/main.hex); \
