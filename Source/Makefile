@@ -9,15 +9,15 @@ OBJCOPY = arm-none-eabi-objcopy
 # =====================
 # Flags & Include Paths
 # =====================
-CFLAGS = -mcpu=$(CPU) -mthumb -Wall -O2 -ffunction-sections -fdata-sections
-CFLAGS += -IInc \
+CFLAGS = -mcpu=$(CPU) -mthumb -Wall -O2 -ffunction-sections -fdata-sections\
+		-IInc \
 		-IDrivers/STM32F10x_StdPeriph_Driver/inc \
 		-ICMSIS/CM3/DeviceSupport/ST/STM32F10x \
 		-ICMSIS/CM3/CoreSupport \
 		-DCMSIS -DSTM32F10X_MD \
 		-include Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_conf.h
 
-LDFLAGS = -TSTM32F103C8TX_FLASH.ld -nostartfiles -Wl,--gc-sections
+LDFLAGS = -TSTM32F103C8TX_FLASH.ld -nostartfiles -Wl,--gc-sections # --specs=nano.specs -u _printf_float -lnosys
 
 # =====================
 # Source Files
@@ -45,6 +45,9 @@ TARGET = build/main.elf
 # =====================
 all: $(TARGET)
 
+# Debug build flags
+CFLAGS_DEBUG = $(CFLAGS) -O0 -g
+
 # Link
 $(TARGET): $(OBJ)
 	mkdir -p build
@@ -62,7 +65,9 @@ $(OBJ_DIR)/%.o: %.s
 
 # Clean
 clean:
-	rm -rf $(OBJ_DIR) $(TARGET) build/main.bin build/main.hex
+	@echo "Cleaning build files..."
+	@chmod -R u+w build || true
+	@rm -rf $(OBJ_DIR) $(TARGET) build/main.bin build/main.hex
 
 # Convert ELF -> HEX
 hex: $(TARGET)
@@ -74,4 +79,18 @@ hex: $(TARGET)
 flash: hex
 	@echo "Flashing with ST-LINK CLI on Windows..."
 	@HEX_WIN_PATH=$$(wslpath -w build/main.hex); \
-	/mnt/c/Windows/System32/cmd.exe /C ST-LINK_CLI.exe" -c SWD -P "$$HEX_WIN_PATH" 0x08000000 -V -Rst"
+	cmd.exe /C ST-LINK_CLI.exe" -c SWD -P "$$HEX_WIN_PATH" 0x08000000 -V -Rst"
+
+# =====================
+# Debug target (build + flash)
+# =====================
+debug: CFLAGS := $(CFLAGS_DEBUG)
+debug: clean $(TARGET)
+	@echo "Debug build complete. Flashing MCU..."
+	@$(MAKE) flash
+	@echo "Debug build flashed. Use arm-none-eabi-gdb with your debug.gdb script."
+	@echo "Starting Windows PowerShell to run debug.bat..."
+	@set -e; \
+	DEBUG_BAT=$$(wslpath -w "$$PWD")\\debug.bat; \
+	echo "DEBUG_BAT = $$DEBUG_BAT"; \
+	powershell.exe -Command "Start-Process powershell -ArgumentList '-NoExit','-ExecutionPolicy Bypass','-Command','& \"$$DEBUG_BAT\"'"
