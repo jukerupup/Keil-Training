@@ -14,10 +14,10 @@ load
 monitor reset init
 
 # Set a breakpoint at main()
-break main
+#break main
 
 # Continue execution until main()
-continue
+#continue
 
 # Optional commands to inspect MCU state
 # info registers

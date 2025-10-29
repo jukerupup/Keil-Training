@@ -17,7 +17,7 @@ CFLAGS = -mcpu=$(CPU) -mthumb -Wall -O2 -ffunction-sections -fdata-sections\
 		-DCMSIS -DSTM32F10X_MD \
 		-include Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_conf.h
 
-LDFLAGS = -TSTM32F103C8TX_FLASH.ld -nostartfiles -Wl,--gc-sections # --specs=nano.specs -u _printf_float -lnosys
+LDFLAGS = -TSTM32F103C8TX_FLASH.ld -nostartfiles -Wl,-Map=$(TARGET:.elf=.map) -Wl,--gc-sections --specs=nosys.specs --specs=nano.specs -u _printf_float -lnosys
 
 # =====================
 # Source Files

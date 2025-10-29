@@ -1,6 +1,7 @@
 #include "stm32f10x.h"
 #include "Delay_F103.h"
 #include "UART.h"
+#include <stdio.h>
 
 void SysClockConfig(void)
 {
@@ -23,17 +24,25 @@ void GPIO_Config(void)
 
 int main(void)
 {
+	char *str="aabbccdd";
+	float a=1.4;
 	SysClockConfig();
 	// SystemInit();
 	GPIO_Config();
 	TIM2_Config();
 	Uart1Config();
+	// 停用 Window Watchdog（防止進入死迴圈）
+	RCC->APB1ENR &= ~RCC_APB1ENR_WWDGEN;// 關閉時脈
+	WWDG->CR = 0;
+	WWDG->CFR = 0;
+	WWDG->SR = 0;
 	while (1)
 	{
 		Delay_ms(1000);
 		GPIOC->BSRR = (1 << (13 + 16));
 		Delay_ms(1000);
 		GPIOC->BSRR = (1 << 13);
-		USART1_SendChar('C');
+		//USART1_SendChar('C');
+		printf("%s, %f\n",str,a);
 	}
 }

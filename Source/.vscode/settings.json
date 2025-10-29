@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "stm32f10x.h": "c"
+        "stm32f10x.h": "c",
+        "cstdio": "c",
+        "stdio.h": "c",
+        "uart.h": "c"
     }
 }
