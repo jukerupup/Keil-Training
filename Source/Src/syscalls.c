@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <UART.h>
+#include <uart_driver.h>
 
 void __io_putchar(char ch)
 {
@@ -60,15 +60,23 @@ int _lseek(int file, int ptr, int dir)
 
 void *_sbrk(ptrdiff_t incr)
 {
-	extern char _end; // Defined by the linker script
-	static char *heap_end;
-	char *prev_heap_end;
+    extern char _end;      // Defined by the linker script: end of BSS/start of heap
+    extern char _estack;   // Defined by the linker script: top of stack
+    static char *heap_end; // Current end of the heap
+    char *prev_heap_end;   // Store previous heap position
 
-	if (heap_end == 0)
-		heap_end = &_end;
+    // Initialize heap pointer on first call
+    if (heap_end == 0)
+        heap_end = &_end;
 
-	prev_heap_end = heap_end;
-	heap_end += incr;
+    // Check for heap-stack collision
+    if (heap_end + incr > &_estack) {
+        // Out of memory: heap collided with stack
+        return (void *) -1;
+    }
 
-	return (void *)prev_heap_end;
+    prev_heap_end = heap_end;  // Save current heap end
+    heap_end += incr;          // Increase heap by requested size (incr)
+
+    return (void *)prev_heap_end;  // Return previous heap end as base of allocated memory
 }
