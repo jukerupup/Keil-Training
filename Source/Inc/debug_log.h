@@ -29,7 +29,7 @@ typedef enum {
 	do {																\
 		if (GLOBAL_LOG_LEVEL >= LOG_LEVEL_ERROR)						\
 			LOG_PRINT("ERR", LOG_MODULE, fmt, ##__VA_ARGS__);			\
-    } while (0)
+	} while (0)
 
 #define LOGW(fmt, ...)													\
 	do {																\
