@@ -2,7 +2,8 @@
 #include "Delay_F103.h"
 #include "uart_driver.h"
 #include <stdio.h>
-
+#include "debug_log.h"
+#define LOG_MODULE "main"
 void SysClockConfig(void)
 {
 	RCC->CR |= RCC_CR_HSERDY;
@@ -43,6 +44,7 @@ int main(void)
 		Delay_ms(1000);
 		GPIOC->BSRR = (1 << 13);
 		//USART1_SendChar('C');
-		printf("%s, %f\n",str,a);
+		//printf("%s, %f\n",str,a);
+		LOGE("main error test\n");
 	}
 }
