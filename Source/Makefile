@@ -9,12 +9,14 @@ OBJCOPY = arm-none-eabi-objcopy
 # =====================
 # Flags & Include Paths
 # =====================
-CFLAGS = -mcpu=$(CPU) -mthumb -Wall -O2 -ffunction-sections -fdata-sections\
+CFLAGS = -mcpu=$(CPU) -mthumb -Wall -Og -g -ffunction-sections -fdata-sections\
 		-IInc \
 		-IDrivers/STM32F10x_StdPeriph_Driver/inc \
 		-ICMSIS/CM3/DeviceSupport/ST/STM32F10x \
 		-ICMSIS/CM3/CoreSupport \
 		-DCMSIS -DSTM32F10X_MD \
+		-IOS/FreeRTOS/inc \
+		-IOS/FreeRTOS/port \
 		-include Drivers/STM32F10x_StdPeriph_Driver/inc/stm32f10x_conf.h
 
 LDFLAGS = -TSTM32F103C8TX_FLASH.ld -nostartfiles -Wl,-Map=$(TARGET:.elf=.map) -Wl,--gc-sections --specs=nosys.specs --specs=nano.specs -u _printf_float -lnosys
@@ -23,6 +25,12 @@ LDFLAGS = -TSTM32F103C8TX_FLASH.ld -nostartfiles -Wl,-Map=$(TARGET:.elf=.map) -W
 # Source Files
 # =====================
 C_SRC = $(wildcard Src/*.c) \
+		OS/FreeRTOS/src/tasks.c \
+		OS/FreeRTOS/src/queue.c \
+		OS/FreeRTOS/src/list.c \
+		OS/FreeRTOS/src/timers.c \
+		OS/FreeRTOS/port/port.c \
+		OS/FreeRTOS/port/heap_4.c \
 		Drivers/STM32F10x_StdPeriph_Driver/src/misc.c \
 		CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c
 
